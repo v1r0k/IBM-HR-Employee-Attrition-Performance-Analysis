@@ -1,4 +1,3 @@
-AB-NYC-2019 Analysis
 Analysis of the "IBM HR Analytics Employee Attrition & Performance" dataset using both SQL and Python, with a Power BI dashboard.
 
 Stack
