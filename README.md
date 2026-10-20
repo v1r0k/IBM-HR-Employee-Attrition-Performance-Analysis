@@ -3,7 +3,7 @@ Analysis of the "IBM-HR-Employee-Attrition-Performance" dataset using both SQL a
 **Dataset** - https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset
 
 🛠️ **Stack**
-*
+
 **SQL (PostgreSQL)** — data extraction and complex queries
 
 **Python** — data cleaning, EDA, and visualizations
