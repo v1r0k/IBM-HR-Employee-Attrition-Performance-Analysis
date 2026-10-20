@@ -7,8 +7,7 @@ Python — data cleaning, exploratory analysis, and visualizations
 Power BI — interactive dashboard
 
 📂 Structure
-sql/ — SQL queries
-
-python/ — Python analysis
-
-power_bi/ — Power BI dashboard
+text
+├── sql/         # SQL queries (PostgreSQL)
+├── python/      # Python analysis (Jupyter Notebooks)
+└── power_bi/    # Power BI dashboard (.pbix and screenshots)
