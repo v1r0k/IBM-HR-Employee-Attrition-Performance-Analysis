@@ -1,0 +1,587 @@
+import pandas as pd
+import numpy as np
+import seaborn as sns
+import matplotlib.pyplot as plt
+empl=pd.read_csv(r'ur path file')
+empl.columns=empl.columns.str.lower()
+empl.to_csv(r'ur path file', index = False)
+
+#52 Средний возраст уволившихся vs оставшихся
+empl['classification']=np.where(empl['attrition'] == "Yes", 'resign', 'stayed')
+empl.groupby('classification')['age'].mean()
+
+#54 Средний стаж уволившихся vs оставшихся
+empl['classification']=np.where(empl['attrition'] == "Yes", 'resign', 'stayed')
+empl.groupby('classification')['yearsatcompany'].mean()
+
+#55 Средняя удовлетворённость уволившихся vs оставшихся.
+empl['classification']=np.where(empl['attrition'] == "Yes", 'resign', 'stayed')
+empl.groupby('classification')['jobsatisfaction'].mean()
+
+#56 Средний баланс работы и личной жизни у уволившихся vs оставшихся.
+empl['classification']=np.where(empl['attrition'] == "Yes", 'resign', 'stayed')
+empl.groupby('classification')['worklifebalance'].mean()
+
+#57 Средний доход по департаментам
+empl.groupby('department')['monthlyincome'].mean()
+
+#58 Средний доход по должностям.
+empl.groupby('jobrole')['monthlyincome'].mean().sort_values()
+
+#59 Средний доход по уровню должности
+empl.groupby('joblevel')['monthlyincome'].mean().sort_values()
+
+#60 Средний доход по полу
+empl.groupby('gender')['monthlyincome'].mean().sort_values()
+
+#61 Средний доход по уровню образования
+empl.groupby('education')['monthlyincome'].mean().sort_values()
+
+#62 Средний доход по семейному положению
+empl.groupby('maritalstatus')['monthlyincome'].mean().sort_values()
+
+#65 Средний доход по возрасту (группы)
+bins=[18, 23, 30, 40, 50, float('inf')]
+labels=['18-23 года', '24-30 лет', '31-40 лет', '41-50 лет', 'старше 50 лет']
+empl['class']=pd.cut(empl['age'], bins = bins, labels = labels, right = False)
+empl.groupby('class').agg(avg_profit = ('monthlyincome', 'mean'), size=('class', 'size')).sort_values(by='avg_profit')
+
+#66 Средний доход по рейтингу производительности
+empl.groupby('performancerating').agg(avg_profit=('monthlyincome', 'mean'), size=('performancerating', 'size'))
+#67 Средний доход по сверхурочным.
+virok=empl.query('overtime=="Yes"')
+virok['monthlyincome'].mean()
+
+#68 Средний доход по бизнес-поездкам.
+empl.groupby('businesstravel')['monthlyincome'].mean()
+
+#69 Средний доход по удовлетворённости работой.
+empl.groupby('jobsatisfaction')['monthlyincome'].mean()
+
+#70 Средний доход по балансу работы и личной жизни.
+empl.groupby('worklifebalance')['monthlyincome'].mean()
+
+#71 Топ-10 самых высокооплачиваемых должностей.
+empl.groupby('jobrole')['monthlyincome'].mean().nlargest(10)
+
+#72 Топ-10 самых низкооплачиваемых должностей.
+empl.groupby('jobrole')['monthlyincome'].mean().nsmallest(10)
+
+#73 Разница в доходе между мужчинами и женщинами внутри одной должности
+empl.pivot_table(values = 'monthlyincome', index = 'gender', columns = 'jobrole', aggfunc = 'mean')
+
+#74 Разница в доходе между мужчинами и женщинами внутри одного департамента
+empl.pivot_table(values = 'monthlyincome', index = 'gender', columns = 'department', aggfunc = 'mean')
+
+#75 Средний процент повышения зарплаты по департаментам
+empl.groupby('department')['percentsalaryhike'].mean()
+
+#76 Средний процент повышения зарплаты по должностям.
+empl.groupby('jobrole')['percentsalaryhike'].mean()
+
+#77 Средний процент повышения зарплаты по рейтингу производительности.
+empl.groupby('performancerating')['percentsalaryhike'].mean() 
+
+#78 Корреляция между доходом и стажем
+empl['monthlyincome'].corr(empl['yearsincurrentrole'])
+
+#79 Корреляция между доходом и возрастом.
+empl['monthlyincome'].corr(empl['age'])
+
+#80 Корреляция между доходом и уровнем должности.
+empl['monthlyincome'].corr(empl['joblevel'])
+
+#81 Корреляция между доходом и удовлетворённостью работой.
+empl['monthlyincome'].corr(empl['jobsatisfaction'])
+
+#82 Корреляция между доходом и балансом работы и личной жизни.
+empl['monthlyincome'].corr(empl['worklifebalance'])
+
+#83 Средний стаж в компании по департаментам.
+empl.groupby('department')['yearsincurrentrole'].mean()
+
+#84 Средний стаж в компании по должностям.
+empl.groupby('jobrole')['yearsincurrentrole'].mean().sort_values()
+
+#85 Средний стаж в компании по полу.
+empl.groupby('gender')['yearsincurrentrole'].mean().sort_values()
+
+#86 Средний стаж в компании по уровню образования.
+empl.groupby('education')['yearsincurrentrole'].mean().sort_values()
+
+#87 Средний общий стаж по департаментам.
+empl.groupby('department')['totalworkingyears'].mean()
+
+#88 Средний общий стаж по должностям.
+empl.groupby('jobrole')['totalworkingyears'].mean().sort_values()
+
+#89 Средний стаж в текущей роли по должностям.
+empl.groupby('jobrole')['yearsincurrentrole'].mean().sort_values()
+
+#90 Средний стаж с последнего повышения по должностям.
+empl.groupby('yearssincelastpromotion')['yearsincurrentrole'].mean().sort_values()
+
+#91 Средний стаж с текущим руководителем по должностям.
+empl.groupby('yearsincurrentrole')['yearswithcurrmanager'].mean()
+
+#92 Среднее количество компаний по департаментам.
+empl.groupby('department')['numcompaniesworked'].mean()
+
+#93 Среднее количество компаний по должностям.
+empl.groupby('jobrole')['numcompaniesworked'].mean()
+
+#94 Среднее количество компаний по возрасту (группы).
+bins=[18, 23, 30, 40, 50, float('inf')]
+labels=['18-23 года', '24-30 лет', '31-40 лет', '41-50 лет', 'старше 50 лет']
+empl['class']=pd.cut(empl['age'], bins = bins, labels = labels, right = False)
+empl.groupby('class')['numcompaniesworked'].mean()
+
+#95 Корреляция между стажем в компании и общим стажем.
+empl['yearsatcompany'].corr(empl['totalworkingyears'])
+
+#96 Корреляция между стажем и уровнем должности.
+empl['yearsatcompany'].corr(empl['joblevel'])
+
+#97 Корреляция между стажем и доходом.
+empl['yearsatcompany'].corr(empl['monthlyincome'])
+
+#98 Корреляция между стажем и текучестью
+empl['case']=np.where(empl['attrition'] == "Yes", '1', '0')
+empl['yearsatcompany'].corr(empl['case'])
+
+#99 Сотрудники с максимальным стажем в компании
+empl.groupby('employeenumber')['yearsatcompany'].max().sort_values(ascending = False).head(10)
+
+#100 Сотрудники с максимальным общим стажем.
+empl.groupby('employeenumber')['totalworkingyears'].max().nlargest(10)
+
+#101 Сотрудники с максимальным стажем в текущей роли.
+empl.groupby('employeenumber')['yearsincurrentrole'].max().nlargest(10)
+
+#102 Сотрудники с максимальным стажем с последнего повышения.
+empl.groupby('employeenumber')['yearssincelastpromotion'].max().nlargest(10)
+
+#103 Сотрудники с максимальным стажем с текущим руководителем.
+empl.groupby('employeenumber')['yearswithcurrmanager'].max().nlargest(10)
+
+#104 Средняя удовлетворённость работой по департаментам.
+empl.groupby('department')['jobsatisfaction'].mean()
+
+#105 Средняя удовлетворённость работой по должностям.
+empl.groupby('jobrole')['jobsatisfaction'].mean()
+
+#106 Средняя удовлетворённость работой по полу.
+empl.groupby('gender')['jobsatisfaction'].mean()
+
+#107 Средняя удовлетворённость окружением по департаментам.
+empl.groupby('department')['environmentsatisfaction'].mean()
+
+#108 Средняя удовлетворённость отношениями по департаментам.
+empl.groupby('department')['relationshipsatisfaction'].mean()
+
+#109 Средний баланс работы и личной жизни по департаментам.
+empl.groupby('department')['worklifebalance'].mean()
+
+#110 Средний баланс работы и личной жизни по должностям.
+empl.groupby('jobrole')['worklifebalance'].mean()
+
+#111 Средний баланс работы и личной жизни по полу.
+empl.groupby('gender')['worklifebalance'].mean()
+
+#112 Средний уровень вовлечённости по департаментам.
+empl.groupby('department')['jobinvolvement'].mean()
+
+#113 Средний уровень вовлечённости по должностям.
+empl.groupby('jobrole')['jobinvolvement'].mean()
+
+#114 Корреляция между удовлетворённостью работой и текучестью.
+empl['case']=np.where(empl['attrition'] == "Yes", '1', '0')
+empl['case'].corr(empl['jobsatisfaction'])
+
+#115 Корреляция между балансом работы и личной жизни и текучестью.
+empl['case']=np.where(empl['attrition'] == "Yes", '1', '0')
+empl['case'].corr(empl['worklifebalance'], method = 'spearman')
+
+#116 Корреляция между вовлечённостью и текучестью.
+empl['case']=np.where(empl['attrition'] == "Yes", '1', '0')
+empl['case'].corr(empl['jobinvolvement'])
+
+#117 Корреляция между удовлетворённостью окружением и текучестью.
+empl['case']=np.where(empl['attrition'] == "Yes", '1', '0')
+empl['case'].corr(empl['environmentsatisfaction'])
+
+#118 Корреляция между удовлетворённостью отношениями и текучестью.
+empl['case']=np.where(empl['attrition'] == "Yes", '1', '0')
+empl['case'].corr(empl['relationshipsatisfaction'])
+
+#119 Корреляция между удовлетворённостью работой и доходом.
+empl['jobsatisfaction'].corr(empl['monthlyincome'])
+
+#120 Корреляция между балансом работы и личной жизни и доходом.
+empl['worklifebalance'].corr(empl['monthlyincome'])
+
+#121 Распределение возраста по департаментам.
+bins=[18, 23, 30, 40, 50, float('inf')]
+labels=['18-23 года', '24-30 лет', '31-40 лет', '41-50 лет', 'старше 50 лет']
+empl['class']=pd.cut(empl['age'], bins = bins, labels = labels, right = False)
+empl.pivot_table(values = 'employeenumber', index = 'class', columns = 'department', aggfunc = 'count')
+
+#122 Распределение возраста по должностям.
+bins=[18, 23, 30, 40, 50, float('inf')]
+labels=['18-23 года', '24-30 лет', '31-40 лет', '41-50 лет', 'старше 50 лет']
+empl['class']=pd.cut(empl['age'], bins = bins, labels = labels, right = False)
+empl.pivot_table(values = 'employeenumber', index = 'class', columns = 'jobrole', aggfunc = 'count')
+
+#123 Средний возраст по департаментам.
+empl.groupby('department')['age'].mean()
+
+#124 Средний возраст по должностям.
+empl.groupby('jobrole')['age'].mean()
+
+#125 Средний возраст по полу.
+empl.groupby('gender')['age'].mean()
+
+#126 Средний возраст по семейному положению.
+empl.groupby('maritalstatus')['age'].mean()
+
+#127 Средний возраст по уровню образования.
+empl.groupby('education')['age'].mean()
+
+#128 Распределение пола по департаментам.
+empl.pivot_table(values = 'employeenumber', index = 'gender', columns = 'department', aggfunc = 'size')
+
+#129 Распределение пола по должностям.
+empl.pivot_table(values = 'employeenumber', index = 'gender', columns = 'jobrole', aggfunc = 'size')
+
+#130 Распределение семейного положения по департаментам.
+empl.pivot_table(values = 'employeenumber', index = 'maritalstatus', columns = 'department', aggfunc = 'size')
+
+#131 Распределение семейного положения по должностям.
+empl.pivot_table(values = 'employeenumber', index = 'maritalstatus', columns = 'jobrole', aggfunc = 'size')
+
+#132 Распределение уровня образования по департаментам.
+empl.pivot_table(values = 'employeenumber', index = 'education', columns = 'department', aggfunc = 'size')
+
+#133 Распределение области образования по департаментам.
+empl.pivot_table(values = 'employeenumber', index = 'educationfield', columns = 'department', aggfunc = 'size')
+
+#134 Распределение расстояния от дома по департаментам.
+bins=[0, 5, 10, 15, 20, 25, float('inf')]
+labels = ('От 0 до 5', 'От 6 до 10', 'От 11 до 15', 'От 15 до 20', 'От 21 до 25', 'Более 25')
+empl['dist_group']=pd.cut(empl['distancefromhome'], bins=bins, labels=labels)
+empl.pivot_table(values='employeecount', index = 'dist_group', columns = 'department', aggfunc = 'size')
+
+#135 Среднее расстояние от дома по департаментам.
+empl.groupby('department')['distancefromhome'].mean()
+
+#136 Среднее расстояние от дома по должностям.
+empl.groupby('jobrole')['distancefromhome'].mean()
+
+#137 Среднее расстояние от дома по полу.
+empl.groupby('gender')['distancefromhome'].mean()
+
+#138 Корреляция между расстоянием от дома и текучестью.
+empl['case']=np.where(empl['attrition'] == "Yes", '1', '0')
+empl['distancefromhome'].corr(empl['case'])
+
+#139 Корреляция между расстоянием от дома и удовлетворённостью работой.
+empl['distancefromhome'].corr(empl['jobsatisfaction'])
+
+#140 Корреляция между расстоянием от дома и балансом работы и личной жизни.
+empl['distancefromhome'].corr(empl['worklifebalance'])
+
+#141 Среднее количество обучений за последний год по департаментам.
+empl.groupby('department')['trainingtimeslastyear'].mean()
+
+#142 Среднее количество обучений за последний год по должностям.
+empl.groupby('jobrole')['trainingtimeslastyear'].mean()
+
+#143 Среднее количество обучений за последний год по полу.
+empl.groupby('gender')['trainingtimeslastyear'].mean()
+
+#144 Среднее количество обучений за последний год по уровню образования.
+empl.groupby('education')['trainingtimeslastyear'].mean()
+
+#145 Корреляция между количеством обучений и текучестью.
+empl['case']=np.where(empl['attrition'] == "Yes", '1', '0')
+empl['trainingtimeslastyear'].corr(empl['case'])
+
+#146 Корреляция между количеством обучений и доходом.
+empl['trainingtimeslastyear'].corr(empl['monthlyincome'])
+
+#147 Корреляция между количеством обучений и производительностью.
+empl['trainingtimeslastyear'].corr(empl['jobinvolvement'])
+
+#148 Корреляция между количеством обучений и стажем.
+empl['trainingtimeslastyear'].corr(empl['yearsatcompany'])
+
+#149 Сотрудники с максимальным количеством обучений.
+empl.groupby('employeenumber')['trainingtimeslastyear'].max().nlargest(20)
+
+#150 Сотрудники с минимальным количеством обучений.
+empl.groupby('employeenumber')['trainingtimeslastyear'].min().nsmallest(20)
+
+#151 Распределение рейтинга производительности.
+empl['performancerating'].value_counts()
+
+#152 Средний рейтинг производительности по департаментам.
+empl.groupby('department')['performancerating'].mean()
+
+#153 Средний рейтинг производительности по должностям.
+empl.groupby('jobrole')['performancerating'].mean()
+
+#154 Средний рейтинг производительности по полу.
+empl.groupby('gender')['performancerating'].mean()
+
+#155 Средний рейтинг производительности по уровню образования.
+empl.groupby('education')['performancerating'].mean()
+
+#156 Корреляция между производительностью и доходом.
+empl['performancerating'].corr(empl['monthlyincome'])
+
+#157 Корреляция между производительностью и текучестью.
+empl['case']=np.where(empl['attrition'] == "Yes", '1', '0')
+empl['performancerating'].corr(empl['case'])
+
+#158 Корреляция между производительностью и стажем.
+empl['performancerating'].corr(empl['yearsatcompany'])
+
+#159 Корреляция между производительностью и удовлетворённостью работой.
+empl['performancerating'].corr(empl['jobsatisfaction'])
+
+#160 Корреляция между производительностью и балансом работы и личной жизни.
+empl['performancerating'].corr(empl['worklifebalance'])
+
+#180 Распределение стажа с последнего повышения.
+bins = [float('-inf'), 3, 6, 9, 12, 15, float('inf')]
+labels = ('От 0 до 3', 'От 4 до 6', 'От 7 до 9', 'От 10 до 12', 'От 13 до 15', 'Больше 15')
+empl['class_last_promo']=pd.cut(empl['yearssincelastpromotion'], bins = bins, labels = labels)
+empl['class_last_promo'].value_counts()
+
+#181 Средний стаж с последнего повышения по департаментам.
+empl.groupby('department')['yearssincelastpromotion'].mean()
+
+#182 Средний стаж с последнего повышения по должностям.
+empl.groupby('jobrole')['yearssincelastpromotion'].mean().sort_values()
+
+#183 Текучесть по стажу с последнего повышения (группы).
+bins = [float('-inf'), 3, 6, 9, 12, 15, float('inf')]
+labels = ('От 0 до 3', 'От 4 до 6', 'От 7 до 9', 'От 10 до 12', 'От 13 до 15', 'Больше 15')
+empl['class_last_promo']=pd.cut(empl['yearssincelastpromotion'], bins = bins, labels = labels)
+empl.groupby('class_last_promo')['attrition'].transform(lambda x: (x=='Yes').mean() *100)
+
+#184 Корреляция между стажем с последнего повышения и текучестью.
+empl['case']=np.where(empl['attrition'] == "Yes", '1', '0')
+empl['yearssincelastpromotion'].corr(empl['case'])
+
+#185 Корреляция между стажем с последнего повышения и доходом.
+empl['yearssincelastpromotion'].corr(empl['monthlyincome'])
+
+#186 Построить матрицу корреляций для всех числовых признаков.
+empl.corr(numeric_only=True)
+
+#187 Найти топ-10 пар признаков с наибольшей положительной корреляцией.
+corr_matrix = empl.corr(numeric_only=True)
+corr_pairs = corr_matrix.stack().reset_index()
+corr_pairs.columns = ['Feature_1', 'Feature_2', 'Correlation']
+corr_pairs = corr_pairs[corr_pairs['Feature_1'] < corr_pairs['Feature_2']]
+corr_pairs.sort_values(by='Correlation', ascending=False).head(10)
+
+#188 Найти топ-10 пар признаков с наибольшей отрицательной корреляцией.
+corr_matrix = empl.corr(numeric_only=True)
+corr_pairs = corr_matrix.stack().reset_index()
+corr_pairs.columns = ['Feature_1', 'Feature_2', 'Correlation']
+corr_pairs = corr_pairs[corr_pairs['Feature_1'] < corr_pairs['Feature_2']]
+corr_pairs.sort_values(by='Correlation').head(10)
+
+#189 Корреляция между текучестью и всеми числовыми признаками.
+empl['attrition_num'] = (empl['attrition'] == 'Yes').astype(int)
+empl.corr(numeric_only=True)['attrition_num'].drop('attrition_num').sort_values(ascending=False)
+
+#190 Корреляция между доходом и всеми числовыми признаками.
+empl.corr(numeric_only=True)['monthlyincome'].drop('monthlyincome').sort_values()
+
+#191 Корреляция между возрастом и всеми числовыми признаками.
+empl.corr(numeric_only=True)['age'].drop('age').sort_values()
+
+#192 Корреляция между стажем и всеми числовыми признаками.
+empl.corr(numeric_only=True)['yearsatcompany'].drop('yearsatcompany').sort_values()
+
+#193 Корреляция между удовлетворённостью и всеми числовыми признаками.
+empl.corr(numeric_only=True)['jobsatisfaction'].drop('jobsatisfaction').sort_values()
+
+#194 Корреляция между производительностью и всеми числовыми признаками.
+empl.corr(numeric_only=True)['performancerating'].drop('performancerating').sort_values()
+
+#195 Корреляция между балансом работы и личной жизни и всеми числовыми признаками.
+empl.corr(numeric_only=True)['worklifebalance'].drop('worklifebalance').sort_values()
+
+#196 Сгруппировать по департаменту и должности, посчитать средний доход.
+empl.pivot_table(values= 'monthlyincome', index= 'department', columns = 'jobrole', aggfunc='mean')
+
+#197 Сгруппировать по департаменту и полу, посчитать средний доход.
+empl.pivot_table(values= 'monthlyincome', index= 'department', columns = 'gender', aggfunc='mean')
+
+#198 Сгруппировать по департаменту и уровню образования, посчитать средний доход.
+empl.pivot_table(values= 'monthlyincome', index= 'department', columns = 'education', aggfunc='mean')
+
+#199 Сгруппировать по должности и уровню должности, посчитать средний доход.
+empl.pivot_table(values= 'monthlyincome', index= 'jobrole', columns = 'joblevel', aggfunc='mean')
+
+#200 Сгруппировать по возрасту и полу, посчитать средний доход.
+empl.pivot_table(values= 'monthlyincome', index= 'gender', columns = 'age', aggfunc='mean')
+
+#201 Сгруппировать по стажу и должности, посчитать средний доход.
+empl.pivot_table(values= 'monthlyincome', index= 'jobrole', columns = 'yearsatcompany', aggfunc='mean')
+
+#202 Сгруппировать по департаменту и текучести, посчитать средний стаж.
+empl.pivot_table(values= 'yearsatcompany', index= 'department', columns = 'attrition', aggfunc='mean')
+
+#203 Сгруппировать по департаменту и текучести, посчитать средний возраст.
+empl.pivot_table(values= 'age', index= 'department', columns = 'attrition', aggfunc='mean')
+
+#204 Сгруппировать по департаменту и текучести, посчитать средний доход.
+empl.pivot_table(values= 'monthlyincome', index= 'department', columns = 'attrition', aggfunc='mean')
+
+#205 Сгруппировать по должности и текучести, посчитать средний доход.
+empl.pivot_table(values= 'monthlyincome', index= 'attrition', columns = 'jobrole', aggfunc='mean')
+
+#226 Сравнить средний доход мужчин и женщин в каждом департаменте
+empl.pivot_table(values='monthlyincome', index = 'department', columns = 'gender', aggfunc = 'mean')
+
+#227 Сравнить средний доход мужчин и женщин в каждой должности.
+empl.pivot_table(values='monthlyincome', index = 'gender', columns = 'jobrole', aggfunc = 'mean')
+
+#228 Сравнить текучесть мужчин и женщин в каждом департаменте.
+empl['num']=(empl['attrition']=='Yes').astype(int)
+pivot=empl.pivot_table(values='num', index = 'gender', columns = 'department', aggfunc = 'mean')
+
+(pivot*100).round() 
+#229 Сравнить текучесть мужчин и женщин в каждой должности.
+empl['num']=(empl['attrition']=='Yes').astype(int)
+pivot=empl.pivot_table(values='num', index = 'gender', columns = 'jobrole', aggfunc = 'mean')
+(pivot*100).round() 
+
+#230 Сравнить средний стаж мужчин и женщин в каждом департаменте.
+empl.pivot_table(values='yearsatcompany', index = 'gender', columns = 'jobrole', aggfunc = 'mean')
+
+#231 Сравнить удовлетворённость работой мужчин и женщин.
+empl.groupby('gender')['jobsatisfaction'].mean()
+
+#232 Сравнить баланс работы и личной жизни мужчин и женщин.
+empl.groupby('gender')['worklifebalance'].mean()
+
+#233 Сравнить вовлечённость мужчин и женщин.
+empl.groupby('gender')['jobinvolvement'].mean()
+
+#234 Сравнить производительность мужчин и женщин.
+empl.groupby('gender')['performancerating'].mean()
+
+#235 Сравнить текучесть по семейному положению внутри каждого департамента.
+empl['num']=(empl['attrition']=='Yes').astype(int)
+pivot=empl.pivot_table(values='num', index = 'maritalstatus', columns = 'department', aggfunc = 'mean')
+(pivot*100).round() 
+
+#236 Гистограмма распределения возраста.
+sns.set_theme(style="whitegrid")
+plt.figure(figsize=(10, 6))
+sns.histplot(data=empl, x='age', bins=15, kde=True, color='steelblue')
+plt.show()
+
+#237 Гистограмма распределения дохода.
+sns.set_theme(style="whitegrid")
+plt.figure(figsize=(10, 6))
+sns.histplot(data=empl, x='monthlyincome', bins=25, kde=True, color='salmon')
+plt.show()
+
+#238 Boxplot дохода по департаментам.
+sns.set_theme(style="whitegrid")
+plt.figure(figsize=(10, 6))
+sns.boxplot(data=empl, x='department', y='monthlyincome', palette='Set2')
+plt.show()
+
+#239 Boxplot возраста по должностям.
+sns.set_theme(style="whitegrid")
+plt.figure(figsize=(12, 8))
+sns.boxplot(data=empl, x='age', y='jobrole', palette='viridis')
+plt.show()
+
+#240 Scatter plot дохода и стажа.
+sns.set_theme(style="whitegrid")
+plt.figure(figsize=(10, 6))
+sns.scatterplot(data=empl, x='totalworkingyears', y='monthlyincome', alpha=0.6, color='teal')
+plt.show()
+
+#241 Scatter plot возраста и дохода.
+sns.set_theme(style="whitegrid")
+plt.figure(figsize=(10, 6))
+sns.scatterplot(data=empl, x='age', y='monthlyincome', alpha=0.6, color='teal')
+plt.show()
+
+#242 Bar chart текучести по департаментам.
+sns.set_theme(style="whitegrid")
+attrition_pct = empl.groupby('department')['attrition'].apply(lambda x: (x == 'Yes').mean() * 100).reset_index()
+plt.figure(figsize=(8, 6))
+sns.barplot(data=attrition_pct, x='department', y='attrition', palette='Set2')
+plt.show()
+
+#243 Bar chart текучести по должностям.
+sns.set_theme(style="whitegrid")
+attrition_pct = empl.groupby('jobrole')['attrition'].apply(lambda x: (x == 'Yes').mean() * 100).reset_index()
+plt.figure(figsize=(8, 6))
+sns.barplot(data=attrition_pct, x='jobrole', y='attrition', palette='Set2')
+plt.show()
+
+#244 Heatmap корреляций
+sns.set_theme(style="white")
+corr_matrix = empl.corr(numeric_only=True)
+plt.figure(figsize=(16, 12))
+sns.heatmap(corr_matrix, annot=False, cmap='coolwarm', vmin=-1, vmax=1, linewidths=0.5)
+plt.show()
+
+#245 Pairplot для числовых признаков.
+sns.set_theme(style="whitegrid")
+cols = ['age', 'monthlyincome', 'totalworkingyears', 'yearsatcompany']
+sns.pairplot(empl[cols], diag_kind='kde', corner=True, plot_kws={'alpha': 0.5, 's': 15})
+plt.show()
+
+#246 Pie chart распределения пола.
+gender_counts = empl['gender'].value_counts()
+plt.figure(figsize=(6, 6))
+plt.pie(gender_counts, labels=gender_counts.index, autopct='%1.1f%%', colors=['#66b3ff', '#ff9999'], startangle=90)
+plt.show()
+
+#247 Pie chart распределения семейного положения.
+marital_counts = empl['maritalstatus'].value_counts()
+plt.figure(figsize=(7, 7))
+plt.pie(marital_counts, labels=marital_counts.index, autopct='%1.1f%%', colors=['#ff9999', '#66b3ff', '#99ff99'], startangle=90)
+plt.show()
+
+#248 Countplot текучести по полу.
+sns.set_theme(style="whitegrid")
+plt.figure(figsize=(8, 6))
+sns.countplot(data=empl, x='gender', hue='attrition', palette='Set2')
+plt.show()
+
+#249 Countplot текучести по сверхурочным.
+sns.set_theme(style="whitegrid")
+plt.figure(figsize=(8, 6))
+sns.countplot(data=empl, x='overtime', hue='attrition', palette='Set2')
+plt.show()
+
+#250 Line plot среднего дохода по стажу.
+sns.set_theme(style="whitegrid")
+plt.figure(figsize=(10, 6))
+sns.lineplot(data=empl, x='yearsatcompany', y='monthlyincome', errorbar=None, marker='o', color='teal')
+plt.show()
+
+#258 Какие департаменты имеют наибольшую разницу в доходе между полами?
+virok=empl.pivot_table(values='monthlyincome', index = 'department', columns = 'gender', aggfunc= 'mean')
+virok['diff']=virok['Female'] - virok['Male']
+virok
+
+#259 Какие должности имеют наибольшую разницу в доходе между полами?
+virok=empl.pivot_table(values='monthlyincome', index = 'jobrole', columns = 'gender', aggfunc= 'mean')
+virok['diff']=(virok['Female'] - virok['Male']).abs()
+virok.sort_values(by='diff')
+
