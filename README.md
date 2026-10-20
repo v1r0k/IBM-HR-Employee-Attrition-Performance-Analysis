@@ -1,6 +1,10 @@
-Analysis of the "IBM-HR-Employee-Attrition-Performance" dataset using both SQL and Python, with a Power BI dashboard.
+**Analysis of the "IBM-HR-Employee-Attrition-Performance" dataset using both SQL and Python, with a Power BI dashboard.
+
+---
 
 Dataset - https://www.kaggle.com/datasets/pavansubhasht/ibm-hr-analytics-attrition-dataset
+
+---
 
 🛠️ **Stack**
 
