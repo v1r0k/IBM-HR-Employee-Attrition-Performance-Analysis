@@ -1,6 +1,7 @@
 Analysis of the "IBM-HR-Employee-Attrition-Performance" dataset using both SQL and Python, with a Power BI dashboard.
 
 🛠️ Stack
+
 SQL (PostgreSQL) — data extraction and complex queries
 
 Python — data cleaning, EDA, and visualizations
