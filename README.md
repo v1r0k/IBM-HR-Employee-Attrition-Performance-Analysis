@@ -1,13 +1,15 @@
-Analysis of the "IBM HR Analytics Employee Attrition & Performance" dataset using both SQL and Python, with a Power BI dashboard.
+Analysis of the "IBM-HR-Employee-Attrition-Performance" dataset using both SQL and Python, with a Power BI dashboard.
+
 🛠️ Stack
-SQL (PostgreSQL) — data aggregation, window functions, and complex queries
+SQL (PostgreSQL) — data extraction and complex queries
 
-Python — data cleaning, exploratory analysis, and visualizations
+Python — data cleaning, EDA, and visualizations
 
-Power BI — interactive dashboard
+Power BI — interactive dashboard, dax measures
+
 
 📂 Structure
 text
-├── sql/         # SQL queries (PostgreSQL)
-├── python/      # Python analysis (Jupyter Notebooks)
-└── power_bi/    # Power BI dashboard (.pbix and screenshots)
+├── sql/         # SQL queries
+├── python/      # Python analysis
+└── power_bi/    # Power BI dashboard
